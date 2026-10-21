@@ -2,6 +2,8 @@
 
 **Due:** Monday, November 2nd, 5pm
 
+*You may collaborate with others and online resources. Work must be uploaded to GradeScope.*
+
 In this homework, implement the same nine functions from Homework 1 (Python) and Homework 4 (Haskell), now in Rust. The behavior is the same unless a Rust type or input range is specified below.
 
 ## Installation
