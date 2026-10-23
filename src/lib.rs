@@ -18,14 +18,11 @@ pub fn nub<T: PartialEq + Clone>(xs: &[T]) -> Vec<T> {
     todo!()
 }
 
-pub fn zip_with<A, B, C, F>(f: F, xs: &[A], ys: &[B]) -> Vec<C>
-where
-    F: FnMut(&A, &B) -> C,
-{
+pub fn zip_with<A, B, C, F: Fn(&A, &B) -> C>(f: F, xs: &[A], ys: &[B]) -> Vec<C> {
     todo!()
 }
 
-pub fn collatz(n: i32) -> Vec<i32> {
+pub fn collatz(n: u64) -> Vec<u64> {
     todo!()
 }
 
@@ -37,7 +34,7 @@ pub fn mode(xs: &[i32]) -> Vec<i32> {
     todo!()
 }
 
-pub fn check_sudoku(grid: &[[u8; 9]; 9]) -> bool {
+pub fn check_sudoku(grid: &[[i32; 9]; 9]) -> bool {
     todo!()
 }
 
