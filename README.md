@@ -37,12 +37,12 @@ This homework uses only the Rust standard library and Rust's built-in testing fr
 
 ## Setup and submission
 
-Clone the starter project with
-```sh
-git clone https://github.com/weirane/cs463-rust-hw6
-```
+Download the starter zip for homework 6 from our class directory:
+[h6.zip](https://people.cs.gmu.edu/~marks/463/h/h6.zip)
 
-The supplied Cargo project has `Cargo.toml`, `src/lib.rs`, and `src/tests.rs`. Replace the `todo!()` bodies in `src/lib.rs` with your implementations. Keep the function names and signatures unchanged. The line `#[cfg(test)] mod tests;` at the bottom of `src/lib.rs` loads the separate tester module.
+
+
+The supplied Cargo project has `Cargo.toml`, `src/lib.rs`, `src/tests.rs`, and `src/main.rs`. Replace the `todo!()` bodies in `src/lib.rs` with your implementations. Keep the function names and signatures unchanged. The line `#[cfg(test)] mod tests;` at the bottom of `src/lib.rs` loads the separate tester module.
 
 Run all supplied tests from the project directory with:
 
@@ -50,13 +50,13 @@ Run all supplied tests from the project directory with:
 cargo test
 ```
 
-To run tests for one function, use a filter such as `cargo test fib_cases`. The starter compiles, but its tests will fail until you replace the `todo!()` bodies. Passing the supplied tests does not guarantee full credit; your functions must work throughout the stated input ranges. Submit **only `src/lib.rs`** to the Homework 6 assignment on Gradescope. Put your name, NetID, and any collaborators or resources used in comments at the top of that file.
+To run tests for one function, use a filter such as `cargo test fib` (all tests with `fib` in the name will be run). The starter compiles, but its tests will fail until you replace the `todo!()` bodies. Passing the supplied tests does not guarantee full credit; your functions must work throughout the stated input ranges. Submit **only `src/lib.rs`** to the Homework 6 assignment on Gradescope. Put your name, NetID, and any collaborators or resources used in comments at the top of that file.
 
 Use the Rust standard library only; do not add dependencies to `Cargo.toml`. You may write helper functions. Do not substitute a library operation that performs an assigned task for your implementation: for example, do not use `reverse` or `rev` to implement `reversed`, or `Iterator::zip` to implement `zip_with`. Sorting is allowed for `median` and `mode`. Do not hardcode the examples or tests.
 
 ### How do I do manual testing?
 
-You can create `src/main.rs` and write a `main()` function to call your functions with test inputs. You can then use `cargo run` to compile and run it.
+You can use the provided `src/main.rs` and edit the `main()` function to call your functions with test inputs. You can then use `cargo run` to compile and run it.
 
 ```rust
 use h6::*; // import your functions
