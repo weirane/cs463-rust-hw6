@@ -10,7 +10,7 @@ In this homework, implement the same nine functions from Homework 1 (Python) and
 
 ### Getting Rust and Cargo
 
-Install Rust locally using `rustup`, as shown in the lecture slides. This installs the Rust compiler (`rustc`) and Cargo, which builds your project and runs its tests. See the [official Rust installation instructions](https://rust-lang.org/tools/install/) for more details.
+The Rust toolchain management tool is called `rustup`. It will install the Rust compiler (`rustc`) and Cargo, which builds your project and runs its tests. See the [official Rust installation instructions](https://rust-lang.org/tools/install/) for more details.
 
 On **macOS, Linux, or Windows Subsystem for Linux (WSL)**, open a terminal and run:
 
@@ -31,11 +31,11 @@ cargo --version
 
 Both commands should print a version number. If either command is not found, follow the `PATH` configuration guidance on the official installation page.
 
-### Libraries and testing
+### Libraries
 
-This homework uses only the Rust standard library and Rust's built-in testing framework. You do not need to install any additional libraries or add dependencies. Cargo is included with Rust; use `cargo test` from the supplied project directory (the directory containing `Cargo.toml`) as described below.
+This homework uses only the Rust standard library and Rust's built-in testing framework. You do not need to install any additional libraries or add dependencies. You may write helper functions. Do not substitute a library operation that performs an assigned task for your implementation: for example, do not use `reverse` or `rev` to implement `reversed`. Sorting is allowed for `median` and `mode`. Do not hardcode the examples or tests.
 
-## Setup and submission
+## Setup and testing
 
 Download the starter zip for homework 6 from our class directory:
 [h6.zip](https://people.cs.gmu.edu/~marks/463/h/h6.zip)
@@ -44,7 +44,7 @@ Download the starter zip for homework 6 from our class directory:
 
 The supplied Cargo project has `Cargo.toml`, `src/lib.rs`, `src/tests.rs`, and `src/main.rs`. Replace the `todo!()` bodies in `src/lib.rs` with your implementations. Keep the function names and signatures unchanged. The line `#[cfg(test)] mod tests;` at the bottom of `src/lib.rs` loads the separate tester module.
 
-Run all supplied tests from the project directory with:
+Run all tests from the project directory with:
 
 ```sh
 cargo test
@@ -75,7 +75,7 @@ fn main() {
 pub fn fib(n: u128) -> u128
 ```
 
-Given a non-negative integer n, calculate and return the nth fibonnaci number. You will need to handle larger inputs. You still might want to warm up with a slow_fib definition, but eventually you need to be faster about it to get full credit (aim for O(n) ). The beginning of the list of fibonacci numbers is [0, 1, 1, 2, 3, 5, 8, ...].
+Given a non-negative integer n, calculate and return the nth fibonacci number. You will need to handle larger inputs. You still might want to warm up with a slow_fib definition, but eventually you need to be faster about it to get full credit (aim for O(n) ). The beginning of the list of fibonacci numbers is [0, 1, 1, 2, 3, 5, 8, ...].
 
 Examples: `fib(0) == 0`, `fib(1) == 1`, `fib(10) == 55`.
 
@@ -85,14 +85,16 @@ Examples: `fib(0) == 0`, `fib(1) == 1`, `fib(10) == 55`.
 pub fn reversed<T: Clone>(xs: &[T]) -> Vec<T>
 ```
 
-Given a list of values, create a new list with the same values in reversed order. 
+Given a list of values, create a new (owned) `Vec` with the same values in reversed order. 
+
+- The bound `<T: Clone>` means “for any type `T` whose values can be cloned”. We don't know what type it is, but we know that we can make a copy of it with `.clone()`. Because `xs` is borrowed (not the owner of the values), you cannot move its elements into the result, so you must clone each element.
 
 Example: `reversed(&[1, 2, 3, 2]) == vec![2, 3, 2, 1]`.
 
 ### 3. Prime check
 
 ```rust
-pub fn is_prime(n: i64) -> bool
+pub fn is_prime(n: i32) -> bool
 ```
 
 Check if the argument is prime (is only divisible by 1 and itself). The smallest prime is 2. 
@@ -107,15 +109,14 @@ pub fn nub<T: PartialEq + Clone>(xs: &[T]) -> Vec<T>
 
 Return a list of all values that show up in the argument at least once. The answer must not include any duplicates, and must report the occurring values in the same order as their first occurrence. Think of this as returning a copy of the list with all duplicates removed.
 
+- The bound `<T: PartialEq + Clone>` now gives `T` two capabilities: we can compare values for equality with `==` or `!=`, and we can clone them. PartialEq serves a similar purpose here to the `Eq a =>` constraint in Haskell.
+
 Example: `nub(&[3, 2, 1, 2, 3, 4]) == vec![3, 2, 1, 4]`.
 
 ### 5. Zip with
 
 ```rust
-pub fn zip_with<A, B, C, F>(f: F, xs: &[A], ys: &[B]) -> Vec<C>
-where
-    F: FnMut(&A, &B) -> C,
-{
+pub fn zip_with<A, B, C, F: Fn(&A, &B) -> C>(f: F, xs: &[A], ys: &[B]) -> Vec<C> {
     // Your implementation.
 }
 ```
@@ -123,6 +124,7 @@ where
 Given a two-argument function and two lists of arguments to supply, create a list of the results of applying the function to each same-indexed pair of arguments from the two lists. (Zip up the two lists with the function).
 
 - if either list runs out of items, ignore the rest of the longer list.
+- `F: Fn(&A, &B) -> C` means that `f` is a function that takes two arguments of types `&A` and `&B` (shared references) and returns a value of type `C`. The function can be a closure or a named function.
 
 Example: `zip_with(|x, y| x + y, &[1, 2, 3], &[10, 20]) == vec![11, 22]`.
 
@@ -143,18 +145,18 @@ Examples: `collatz(1) == vec![1]`, `collatz(3) == vec![3, 10, 5, 16, 8, 4, 2, 1]
 ### 7. Median
 
 ```rust
-pub fn median(xs: &[i64]) -> f64
+pub fn median(xs: &[i32]) -> f64
 ```
 
 - Purpose: given a list that contains one or more integers, calculate and return the median value (the middle value when the values are in sorted order).
-- when there's an even number of items, there's no true middle item - and we return the average of the two closest to the middle (hence the Double return type).
+- when there's an even number of items, there's no true middle item - and we return the average of the two closest to the middle (hence the `f64` return type).
 
 Examples: `median(&[3, 4, 5, 1, 2]) == 3.0`, `median(&[1, 3, 6, 8]) == 4.5`.
 
 ### 8. Mode
 
 ```rust
-pub fn mode(xs: &[i64]) -> Vec<i64>
+pub fn mode(xs: &[i32]) -> Vec<i32>
 ```
 
 - Purpose: given a list that contains one or more integers, calculate and return the mode(s).
@@ -165,7 +167,7 @@ Examples: `mode(&[1, 2, 3]) == vec![1, 2, 3]`, `mode(&[3, 1, 2, 3, 1]) == vec![1
 ### 9. Check Sudoku
 
 ```rust
-pub fn check_sudoku(grid: &[[u8; 9]; 9]) -> bool
+pub fn check_sudoku(grid: &[[i32; 9]; 9]) -> bool
 ```
 
 Given a 9x9 2d list, check if it represents a valid, solved sudoku.
@@ -173,4 +175,8 @@ Given a 9x9 2d list, check if it represents a valid, solved sudoku.
 - We aren't solving a sudoku, we're only checking someone's completed attempt. That means that we are checking that:
   - each of the nine rows must contain all digits 1 through 9
   - each of the nine columns must contain all digits 1 through 9
-  - when we split the grid into three 3x3 groups that don't overlap, each of these groups must contain all digits 1 through 9.
+  - when we split the grid into nine 3x3 groups that don't overlap, each of these groups must contain all digits 1 through 9.
+
+## Submission
+
+Submit **only `src/lib.rs`** to the Homework 6 assignment on Gradescope. Include your name, NetID, and any collaborators or resources used in comments at the top of the file. Keep all required function names and signatures unchanged.
